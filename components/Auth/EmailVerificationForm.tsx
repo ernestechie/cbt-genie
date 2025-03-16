@@ -1,7 +1,5 @@
 "use client";
 
-import { emailSchema } from "@/schema/auth-schema";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -14,15 +12,18 @@ import TextInput from "../Base/Input/TextInput";
 import { Button } from "../ui/button";
 import { Form, FormLabel } from "../ui/form";
 
-const emailFormSchema = z.object({
-  email: emailSchema,
+const otpFormSchema = z.object({
+  otpCode: z
+    .string()
+    .min(6, "OTP must be 6 digits")
+    .max(6, "OTP must be 6 digits"),
 });
 
-type EmailFormType = z.infer<typeof emailFormSchema>;
+type OtpFormType = z.infer<typeof otpFormSchema>;
 
-export default function EmailRegistrationForm() {
-  const form = useForm<EmailFormType>({
-    resolver: zodResolver(emailFormSchema),
+export default function EmailVerificationForm() {
+  const form = useForm<OtpFormType>({
+    resolver: zodResolver(otpFormSchema),
     defaultValues: {},
     mode: "onChange",
     reValidateMode: "onChange",
@@ -30,34 +31,37 @@ export default function EmailRegistrationForm() {
 
   const { control, handleSubmit, formState } = form;
 
-  const onSubmit = async (values: EmailFormType) => {
-    const { email } = values;
-    const apiRes = await httpClient.post(AuthRoutes.SignIn, { email });
+  const onSubmit = async (values: OtpFormType) => {
+    const { otpCode } = values;
+    const apiRes = await httpClient.post(AuthRoutes.SignIn, { otpCode });
     const apiData = await apiRes.data;
 
-    console.log("API_DATA -> ", apiData);
+    console.log("OTP_DATA -> ", apiData);
   };
 
   return (
     <div className="flex flex-col gap-y-4">
       <div className="mb-4">
         <h2 className="text-3xl font-extrabold text-neutral-800 mb-2">
-          Register/Login
+          Verify Identity
         </h2>
-        <p className="text-neutral-600">Enter your email address to proceed</p>
+        <p className="text-neutral-600">
+          Enter the code sent to <b>officialisaiahovie@gmail.com</b>
+        </p>
       </div>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormContainer
             control={control}
-            name="email"
+            name="otpCode"
             render={(field, err) => (
               <div className="mb-4">
-                <FormLabel htmlFor={field.name}>Email Address</FormLabel>
+                <FormLabel htmlFor={field.name}>OTP Code</FormLabel>
                 <TextInput
                   {...field}
-                  type="email"
-                  placeholder="Enter email..."
+                  type="number"
+                  maxLength={6}
+                  placeholder="e.g 469-101"
                   error={err?.message}
                 />
               </div>
@@ -74,12 +78,6 @@ export default function EmailRegistrationForm() {
           </Button>
         </form>
       </Form>
-
-      {/*  */}
-      <p className="text-sm text-neutral-600 text-center">
-        By clicking continue, you agree to our <b>Terms of Service</b> and{" "}
-        <b>Privacy Policy.</b>
-      </p>
     </div>
   );
 }
