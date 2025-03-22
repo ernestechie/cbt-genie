@@ -14,7 +14,7 @@ export const POST = catchErrorAsync(async (req: NextRequest) => {
   const user = await UserModel.findOne({ email }).select(
     "-__v -otpCode -otpCodeExpiry"
   );
-  if (!user) throw new AppError("User does not exist", 400);
+  if (!user) throw new AppError("User does not exist", 403);
 
   // Generate new otp
   // const otpCode =

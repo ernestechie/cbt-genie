@@ -1,9 +1,13 @@
+import { studentOnboardingFormSchema } from "@/schema/student";
 import { Document } from "mongoose";
+import { z } from "zod";
 
 export enum UserType {
   STUDENT = "STUDENT",
   ADMIN = "ADMIN",
 }
+
+export type IUserType = z.infer<typeof studentOnboardingFormSchema>;
 
 export interface IUserModel extends Document {
   email: string;

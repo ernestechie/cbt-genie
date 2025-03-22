@@ -4,6 +4,7 @@ import { UserModel } from "@/models/UserModel";
 import AppError from "@/modules/AppError";
 import { studentOnboardingFormSchema } from "@/schema/student";
 import { connect } from "@/server/mongodb.config";
+import { IUserType } from "@/types/user";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -14,10 +15,10 @@ export const POST = catchErrorAsync(async (req: NextRequest) => {
 
   // Check if user already exists
   const user = await UserModel.findOne({ email }).select("-__v");
-  if (!user) throw new AppError("User does not exist", 400);
+  if (!user) throw new AppError("User does not exist", 403);
   else {
     if (user && !user.otpCode)
-      throw new AppError("Invalid or expired OTP", 400);
+      throw new AppError("Invalid or expired OTP", 403);
   }
 
   // Check if otp is correct
@@ -27,7 +28,7 @@ export const POST = catchErrorAsync(async (req: NextRequest) => {
   // Check user onboarding status
   let userHasOnboarded = false;
 
-  const onboardingData = {
+  const onboardingData: IUserType = {
     firstname: user.firstname,
     surname: user.surname,
     faculty: user.facultyId,

@@ -45,26 +45,31 @@ export default function EmailVerificationForm() {
       const apiData = await apiRes.data;
       const data = apiData?.data;
 
-      console.log("OTP_DATA -> ", apiData);
+      const toastMessage = data?.userHasOnboarded
+        ? `Welcome, ${data?.user?.firstname} ${data?.user?.surname}`
+        : "Complete onboarding process and create your student profile";
 
       if (data?.user?.id) {
         toast.success("Verification Successful", {
-          description: apiData?.message,
+          description: toastMessage,
+          duration: data?.userHasOnboarded ? 5000 : 3000,
         });
 
-        // Check if user has onboarded. apiData?.data?.hasOnboarded
-        if (data?.userHasOnboarded) router.push("/app");
-        else setAuthStep(AuthStep.EnterPersonalDetails);
+        // Check if user has onboarded
+        if (data?.userHasOnboarded) {
+          setAuthStep(AuthStep.EnterEmail);
+          router.push("/app");
+        } else setAuthStep(AuthStep.EnterPersonalDetails);
       }
       reset();
     } catch (error: any) {
-      console.log("ERROR -> ", error);
       toast.error("Failed", {
         description: error?.response?.data?.message,
       });
     }
   };
 
+  // Handle otp resend
   const handleResendOtp = async () => {
     try {
       setResendingOtp(true);
@@ -73,7 +78,6 @@ export default function EmailVerificationForm() {
       });
 
       const apiData = await apiRes.data;
-      console.log("RESEND_OTP_DATA -> ", apiData);
 
       if (apiData?.user?.id) {
         toast.success("Successful", {
@@ -81,7 +85,6 @@ export default function EmailVerificationForm() {
         });
       }
     } catch (error: any) {
-      console.log("ERROR -> ", error);
       toast.error("Failed", {
         description: error?.response?.data?.message,
       });
