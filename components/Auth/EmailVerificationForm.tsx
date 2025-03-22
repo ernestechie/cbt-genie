@@ -1,27 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { AuthRoutes } from "@/constants/auth";
+import { AuthRoutes, AuthStep } from "@/constants/auth";
+import useOnboardingCheck from "@/hooks/useOnboardingCheck";
+import { otpFormSchema } from "@/schema/auth-schema";
 import httpClient from "@/server/axios";
+import { useAuthStore } from "@/store/auth-store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 import FormContainer from "../Base/Form/FormContainer";
 import TextInput from "../Base/Input/TextInput";
 import { Button } from "../ui/button";
 import { Form, FormLabel } from "../ui/form";
 
-const otpFormSchema = z.object({
-  otpCode: z
-    .string()
-    .min(6, "OTP must be 6 digits")
-    .max(6, "OTP must be 6 digits"),
-});
-
 type OtpFormType = z.infer<typeof otpFormSchema>;
 
 export default function EmailVerificationForm() {
+  const router = useRouter();
+
+  const { onboardingUserExists } = useOnboardingCheck();
+  const { setAuthStep } = useAuthStore();
+  const [resendingOtp, setResendingOtp] = useState(false);
+
   const form = useForm<OtpFormType>({
     resolver: zodResolver(otpFormSchema),
     defaultValues: {},
@@ -29,14 +33,61 @@ export default function EmailVerificationForm() {
     reValidateMode: "onChange",
   });
 
-  const { control, handleSubmit, formState } = form;
+  const { control, handleSubmit, formState, reset } = form;
 
   const onSubmit = async (values: OtpFormType) => {
-    const { otpCode } = values;
-    const apiRes = await httpClient.post(AuthRoutes.SignIn, { otpCode });
-    const apiData = await apiRes.data;
+    try {
+      const { otpCode } = values;
+      const apiRes = await httpClient.post(AuthRoutes.VerifyOtp, {
+        otpCode,
+        email: onboardingUserExists,
+      });
+      const apiData = await apiRes.data;
+      const data = apiData?.data;
 
-    console.log("OTP_DATA -> ", apiData);
+      console.log("OTP_DATA -> ", apiData);
+
+      if (data?.user?.id) {
+        toast.success("Verification Successful", {
+          description: apiData?.message,
+        });
+
+        // Check if user has onboarded. apiData?.data?.hasOnboarded
+        if (data?.userHasOnboarded) router.push("/app");
+        else setAuthStep(AuthStep.EnterPersonalDetails);
+      }
+      reset();
+    } catch (error: any) {
+      console.log("ERROR -> ", error);
+      toast.error("Failed", {
+        description: error?.response?.data?.message,
+      });
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      setResendingOtp(true);
+      const apiRes = await httpClient.post(AuthRoutes.ResendOtp, {
+        email: onboardingUserExists,
+      });
+
+      const apiData = await apiRes.data;
+      console.log("RESEND_OTP_DATA -> ", apiData);
+
+      if (apiData?.user?.id) {
+        toast.success("Successful", {
+          description: apiData?.message,
+        });
+      }
+    } catch (error: any) {
+      console.log("ERROR -> ", error);
+      toast.error("Failed", {
+        description: error?.response?.data?.message,
+      });
+    } finally {
+      setResendingOtp(false);
+    }
   };
 
   return (
@@ -46,7 +97,7 @@ export default function EmailVerificationForm() {
           Verify Identity
         </h2>
         <p className="text-neutral-600">
-          Enter the code sent to <b>officialisaiahovie@gmail.com</b>
+          Enter the code sent to <b>{onboardingUserExists}</b>
         </p>
       </div>
       <Form {...form}>
@@ -68,7 +119,25 @@ export default function EmailVerificationForm() {
             )}
           />
 
+          <div className="flex items-center mb-4 !text-sm text-neutral-600">
+            <p>
+              {/* Countdown / Resend */}
+              Didn&apos;t you receive the OTP?
+            </p>
+
+            <Button
+              variant="link"
+              size="small"
+              type="button"
+              onClick={handleResendOtp}
+              loading={resendingOtp}
+            >
+              Resend OTP
+            </Button>
+          </div>
+
           <Button
+            variant="default"
             size="large"
             block
             type="submit"

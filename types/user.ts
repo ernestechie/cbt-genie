@@ -12,7 +12,7 @@ export interface IUserModel extends Document {
   surname: string;
   facultyId: string;
   departmentId: string;
-  matriculationNumber: string;
+  username: string;
   emailResetToken: string;
   emailResetExpires: Date;
   emailVerificationToken: string;
@@ -22,6 +22,8 @@ export interface IUserModel extends Document {
   emailLastChanged: Date;
   // Declare the method in the interface
   updateEmailAfter: (JWTTimestamp: number) => boolean;
+  userOtpValid: (otpCode: string) => boolean;
+  createOtpCodeToken: () => string;
   createEmailResetToken: () => string;
   createEmailVerificationToken: () => string;
 }

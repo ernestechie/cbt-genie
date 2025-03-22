@@ -12,6 +12,8 @@ interface AsyncErrorCatch {
 export default function catchErrorAsync(handler: AsyncErrorCatch) {
   return async (req: NextRequest, res: NextResponse) => {
     return handler(req, res).catch((error: AppError) => {
+      console.error(`\n -- catchErrorAsync --`, error);
+
       return NextResponse.json(
         {
           status: error.status,

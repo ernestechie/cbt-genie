@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CBT_GENIE_COOKIE_KEY } from "@/constants/auth";
 // import { UserTokenData } from "@/types/auth";
 import jwt from "jsonwebtoken";

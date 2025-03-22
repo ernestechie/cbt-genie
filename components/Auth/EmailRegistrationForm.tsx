@@ -7,8 +7,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { AuthRoutes } from "@/constants/auth";
+import { AuthRoutes, AuthStep, CBT_GENIE_USER } from "@/constants/auth";
 import httpClient from "@/server/axios";
+import { useAuthStore } from "@/store/auth-store";
+
+import { toast } from "sonner";
 import FormContainer from "../Base/Form/FormContainer";
 import TextInput from "../Base/Input/TextInput";
 import { Button } from "../ui/button";
@@ -21,6 +24,7 @@ const emailFormSchema = z.object({
 type EmailFormType = z.infer<typeof emailFormSchema>;
 
 export default function EmailRegistrationForm() {
+  const { setAuthStep } = useAuthStore();
   const form = useForm<EmailFormType>({
     resolver: zodResolver(emailFormSchema),
     defaultValues: {},
@@ -28,14 +32,33 @@ export default function EmailRegistrationForm() {
     reValidateMode: "onChange",
   });
 
-  const { control, handleSubmit, formState } = form;
+  const { control, handleSubmit, formState, reset } = form;
 
   const onSubmit = async (values: EmailFormType) => {
-    const { email } = values;
-    const apiRes = await httpClient.post(AuthRoutes.SignIn, { email });
-    const apiData = await apiRes.data;
+    try {
+      const { email } = values;
+      const apiRes = await httpClient.post(AuthRoutes.SignIn, { email });
+      const apiData = await apiRes.data;
 
-    console.log("API_DATA -> ", apiData);
+      console.log("API_DATA -> ", apiData);
+
+      toast.success(`WELCOME`, {
+        description: apiData?.message,
+        duration: 10000,
+      });
+
+      if (apiData?.data?.userExists) {
+        const userEmail = apiData?.data?.user?.email;
+        localStorage.setItem(CBT_GENIE_USER, userEmail);
+
+        setAuthStep(AuthStep.EnterOTP);
+      } else {
+        setAuthStep(AuthStep.EnterPersonalDetails);
+      }
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

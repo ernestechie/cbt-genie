@@ -1,7 +1,9 @@
 import catchErrorAsync from "@/lib/catch-async-error";
 import { UserModel } from "@/models/UserModel";
+
 import { connect } from "@/server/mongodb.config";
 import { NextRequest, NextResponse } from "next/server";
+// import { z } from "zod";
 
 // Find user account with email
 // If user exist, send otp to email and return a property, existingUser: true
@@ -12,24 +14,38 @@ import { NextRequest, NextResponse } from "next/server";
 connect();
 export const POST = catchErrorAsync(async (req: NextRequest) => {
   let userExists = true;
+  // const hasOnboarded = false;
   const body = await req.json();
 
   let user = await UserModel.findOne({ email: body.email }).select("-__v");
   if (!user) {
     userExists = false;
     user = await UserModel.create({ email: body.email });
+  } else {
+    // Generate new otp
+    const otpCode = await user.createOtpCodeToken();
+    // Send otp to usr email
+    await user.save({ validateBeforeSave: false });
+
+    await user.save();
   }
 
+  // TODO: Check if user has onboarded
+
   const message = userExists
-    ? "Successful! An otp has been sent to your email"
-    : "Successful! Check your email for verification link";
+    ? "An otp has been sent to your email"
+    : "Check your email for verification link and complete onboarding";
 
   return NextResponse.json(
     {
       message,
       data: {
         userExists,
-        userData: user,
+        user: {
+          email: user.email,
+          role: user.role,
+          id: user._id,
+        },
       },
       status: true,
     },

@@ -1,17 +1,29 @@
 "use client";
 
 import EmailRegistrationForm from "@/components/Auth/EmailRegistrationForm";
-// import EmailVerificationForm from "@/components/Auth/EmailVerificationForm";
+import EmailVerificationForm from "@/components/Auth/EmailVerificationForm";
+import StudentOnboardingForm from "@/components/Auth/StudentOnboardingForm";
+import SuccessPage from "@/components/Auth/SuccessPage";
 import AuthLayout from "@/components/Layout/AuthLayout";
+import { AuthStep } from "@/constants/auth";
+import { useAuthStore } from "@/store/auth-store";
 import React from "react";
 
 export default function AuthPage() {
-  return (
-    <div>
-      <AuthLayout>
-        <EmailRegistrationForm />
-        {/* <EmailVerificationForm /> */}
-      </AuthLayout>
-    </div>
-  );
+  const { authStep } = useAuthStore();
+
+  const renderAuthStep = () => {
+    switch (authStep) {
+      case AuthStep.EnterOTP:
+        return <EmailVerificationForm />;
+      case AuthStep.EnterPersonalDetails:
+        return <StudentOnboardingForm />;
+      case AuthStep.SignUpSuccess:
+        return <SuccessPage />;
+      default:
+        return <EmailRegistrationForm />;
+    }
+  };
+
+  return <AuthLayout>{renderAuthStep()}</AuthLayout>;
 }
