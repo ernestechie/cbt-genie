@@ -40,9 +40,7 @@ export default function EmailRegistrationForm() {
       const apiRes = await httpClient.post(AuthRoutes.SignIn, { email });
       const apiData = await apiRes.data;
 
-      console.log("API_DATA -> ", apiData);
-
-      toast.success(`WELCOME`, {
+      toast.success(`Welcome`, {
         description: apiData?.message,
         duration: 10000,
       });
