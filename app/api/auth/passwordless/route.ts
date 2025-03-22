@@ -23,11 +23,10 @@ export const POST = catchErrorAsync(async (req: NextRequest) => {
     user = await UserModel.create({ email: body.email });
   } else {
     // Generate new otp
-    const otpCode = await user.createOtpCodeToken();
-    // Send otp to usr email
+    // const otpCode =
+    await user.createOtpCodeToken();
+    // TODO: Send otp to usr email
     await user.save({ validateBeforeSave: false });
-
-    await user.save();
   }
 
   // TODO: Check if user has onboarded

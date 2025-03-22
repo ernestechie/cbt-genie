@@ -17,7 +17,8 @@ export const POST = catchErrorAsync(async (req: NextRequest) => {
   if (!user) throw new AppError("User does not exist", 400);
 
   // Generate new otp
-  const otpCode = await user.createOtpCodeToken();
+  // const otpCode =
+  await user.createOtpCodeToken();
   await user.save({ validateBeforeSave: false });
 
   // TODO: Send otp email to user
