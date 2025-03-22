@@ -86,7 +86,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputType>((props, ref) => {
     label && "-mb-1",
     disabled && "cursor-not-allowed opacity-50",
     darkMode && "dark:placeholder:text-accent-300 dark:text-accent-50",
-    "!leading-normal text-left bg-transparent h-full w-full caret-secondary-800 dark:caret-accent-50 text-gray-2 leading-2 focus:outline-none block appearance-none",
+    "!leading-normal text-left bg-transparent h-full w-full caret-secondary-800 dark:caret-accent-50 text-neutral-700 leading-2 focus:outline-none block appearance-none",
     inputClass
   );
 
@@ -130,7 +130,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputType>((props, ref) => {
         {prepend && (
           <div
             onClick={prependClick}
-            className="flex-shrink-0 text-sm flex items-center text-gray-3 cursor-pointer"
+            className="flex-shrink-0 text-sm flex items-center text-neutral-600 cursor-pointer"
           >
             {prepend}
           </div>
@@ -163,7 +163,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputType>((props, ref) => {
         {append && (
           <div
             onClick={appendClick}
-            className="flex-shrink-0 text-sm flex items-center text-gray-3 cursor-pointer"
+            className="flex-shrink-0 text-sm flex items-center text-neutral-600 cursor-pointer"
           >
             {append}
           </div>

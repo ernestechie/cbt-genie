@@ -7,6 +7,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { AuthRoutes, AuthStep, CBT_GENIE_USER } from "@/constants/auth";
+import httpClient from "@/server/axios";
+import { useAuthStore } from "@/store/auth-store";
+
+import { toast } from "sonner";
 import FormContainer from "../Base/Form/FormContainer";
 import TextInput from "../Base/Input/TextInput";
 import { Button } from "../ui/button";
@@ -19,26 +24,50 @@ const emailFormSchema = z.object({
 type EmailFormType = z.infer<typeof emailFormSchema>;
 
 export default function EmailRegistrationForm() {
+  const { setAuthStep } = useAuthStore();
   const form = useForm<EmailFormType>({
     resolver: zodResolver(emailFormSchema),
     defaultValues: {},
-    mode: "onSubmit",
-    reValidateMode: "onSubmit",
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
-  const { control, handleSubmit } = form;
+  const { control, handleSubmit, formState, reset } = form;
 
-  const onSubmit = (values: EmailFormType) => {
-    console.log("REGISTER -> ", values);
+  const onSubmit = async (values: EmailFormType) => {
+    try {
+      const { email } = values;
+      const apiRes = await httpClient.post(AuthRoutes.SignIn, { email });
+      const apiData = await apiRes.data;
+
+      console.log("API_DATA -> ", apiData);
+
+      toast.success(`WELCOME`, {
+        description: apiData?.message,
+        duration: 10000,
+      });
+
+      if (apiData?.data?.userExists) {
+        const userEmail = apiData?.data?.user?.email;
+        localStorage.setItem(CBT_GENIE_USER, userEmail);
+
+        setAuthStep(AuthStep.EnterOTP);
+      } else {
+        setAuthStep(AuthStep.EnterPersonalDetails);
+      }
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <div className="flex flex-col gap-y-4">
       <div className="mb-4">
-        <h2 className="text-3xl font-extrabold text-neutral-600 mb-1">
+        <h2 className="text-3xl font-extrabold text-neutral-800 mb-2">
           Register/Login
         </h2>
-        <p className="text-neutral-500">Enter your email address to proceed</p>
+        <p className="text-neutral-600">Enter your email address to proceed</p>
       </div>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -58,14 +87,19 @@ export default function EmailRegistrationForm() {
             )}
           />
 
-          <Button size="large" block type="submit">
+          <Button
+            size="large"
+            block
+            type="submit"
+            loading={formState.isSubmitting}
+          >
             Continue
           </Button>
         </form>
       </Form>
 
       {/*  */}
-      <p className="text-sm text-neutral-500 text-center">
+      <p className="text-sm text-neutral-600 text-center">
         By clicking continue, you agree to our <b>Terms of Service</b> and{" "}
         <b>Privacy Policy.</b>
       </p>
