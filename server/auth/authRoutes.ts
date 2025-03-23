@@ -17,10 +17,9 @@ authRoutes.get(
   sessionMiddleware,
   honoErrorWrapper(async (context) => {
     const user = context.get("user");
-    const { status, json } = context;
 
-    status(StatusCode.RESOURCE_RETRIEVED);
-    return json({
+    context.status(StatusCode.RESOURCE_RETRIEVED);
+    return context.json({
       status: true,
       message: "User retrieved successfully",
       data: user,
@@ -93,7 +92,7 @@ authRoutes.post(
     const body = req.valid("json");
 
     try {
-      const userId = context.get("user");
+      const userId = context.get("userId");
       const user = await UserModel.findByIdAndUpdate(userId, body, {
         runValidators: true,
         new: true,
