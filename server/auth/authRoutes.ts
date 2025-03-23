@@ -2,6 +2,7 @@ import { StatusCode } from "@/constants/status-codes";
 import { sessionMiddleware } from "@/middlewares/session-middleware";
 import { UserModel } from "@/models/UserModel";
 import { emailFormSchema } from "@/schema/auth-schema";
+import { studentOnboardingFormSchema } from "@/schema/student";
 import honoErrorWrapper from "@/server/hono-error-wrapper";
 import { connect } from "@/server/mongodb.config";
 import { zValidator } from "@hono/zod-validator";
@@ -10,6 +11,7 @@ import { Hono } from "hono";
 connect();
 const authRoutes = new Hono();
 
+// Get current user details
 authRoutes.get(
   "/me",
   sessionMiddleware,
@@ -26,6 +28,7 @@ authRoutes.get(
   })
 );
 
+// Login/Registration
 authRoutes.post(
   "/passwordless",
   zValidator("json", emailFormSchema),
@@ -46,7 +49,7 @@ authRoutes.post(
         // Generate new otp
         // const otpCode =
         await user.createOtpCodeToken();
-        // TODO: Send otp to usr email
+        // TODO: Send otp to user email
         await user.save({ validateBeforeSave: false });
       }
 
@@ -74,6 +77,40 @@ authRoutes.post(
       return json({
         status: false,
         // message: error.message,
+        message: "Something went wrong",
+      });
+    }
+  }
+);
+
+// User onboarding
+authRoutes.post(
+  "/onboarding",
+  zValidator("json", studentOnboardingFormSchema),
+  sessionMiddleware,
+  async (context) => {
+    const { status, json, req } = context;
+    const body = req.valid("json");
+
+    try {
+      const userId = context.get("user");
+      const user = await UserModel.findByIdAndUpdate(userId, body, {
+        runValidators: true,
+        new: true,
+      }).select("-__v -otpCodeExpiry -otpCode");
+
+      status(StatusCode.RESOURCE_RETRIEVED);
+      return json({
+        status: true,
+        message: "Onboarding successful!",
+        user,
+      });
+    } catch (error) {
+      console.log("ONBOARDING_ERROR ->", error);
+
+      status(StatusCode.BAD_REQUEST);
+      return json({
+        status: false,
         message: "Something went wrong",
       });
     }

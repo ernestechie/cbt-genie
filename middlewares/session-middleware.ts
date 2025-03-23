@@ -9,6 +9,7 @@ import jwt from "jsonwebtoken";
 type AuthContext = {
   Variables: {
     user: typeof UserModel | null;
+    userId: string;
   };
 };
 
@@ -47,6 +48,7 @@ export const sessionMiddleware = createMiddleware<AuthContext>(
       }
 
       context.set("user", user);
+      context.set("userId", userId);
       await next();
     } catch (err) {
       console.log("sessionMiddleware => ", err);
