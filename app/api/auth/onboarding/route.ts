@@ -1,3 +1,4 @@
+import { StatusCode } from "@/constants/status-codes";
 import catchErrorAsync from "@/lib/catch-async-error";
 import { UserModel } from "@/models/UserModel";
 import AppError from "@/modules/AppError";
@@ -10,11 +11,10 @@ connect();
 export const POST = catchErrorAsync(async (req: NextRequest) => {
   // const body = await req;
 
-  console.log(req.headers);
-
   const userId = await getTokenData(req);
   const user = await UserModel.findById(userId).select("-__v");
-  if (!user) throw new AppError("Unauthorized User", 403);
+  if (!user)
+    throw new AppError("Unauthorized User", StatusCode.UNAUTHORIZED_USER);
 
   const response = NextResponse.json(
     {

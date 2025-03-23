@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { StatusCode } from "@/constants/status-codes";
 import AppError from "@/modules/AppError";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -29,7 +30,7 @@ export default function catchErrorAsync<T extends z.ZodTypeAny>(
             message: "Invalid request body",
             data: { errors: result?.error?.errors },
           },
-          { status: 400 }
+          { status: StatusCode.BAD_REQUEST }
         );
       }
     }

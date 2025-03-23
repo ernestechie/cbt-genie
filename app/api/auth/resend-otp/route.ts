@@ -1,3 +1,4 @@
+import { StatusCode } from "@/constants/status-codes";
 import catchErrorAsync from "@/lib/catch-async-error";
 import { UserModel } from "@/models/UserModel";
 import AppError from "@/modules/AppError";
@@ -14,7 +15,8 @@ export const POST = catchErrorAsync(async (req: NextRequest) => {
   const user = await UserModel.findOne({ email }).select(
     "-__v -otpCode -otpCodeExpiry"
   );
-  if (!user) throw new AppError("User does not exist", 403);
+  if (!user)
+    throw new AppError("User does not exist", StatusCode.RESOURCE_NOT_FOUND);
 
   // Generate new otp
   // const otpCode =

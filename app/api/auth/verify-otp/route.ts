@@ -1,4 +1,5 @@
 import { CBT_GENIE_COOKIE_KEY } from "@/constants/auth";
+import { StatusCode } from "@/constants/status-codes";
 import catchErrorAsync from "@/lib/catch-async-error";
 import { UserModel } from "@/models/UserModel";
 import AppError from "@/modules/AppError";
@@ -15,15 +16,20 @@ export const POST = catchErrorAsync(async (req: NextRequest) => {
 
   // Check if user already exists
   const user = await UserModel.findOne({ email }).select("-__v");
-  if (!user) throw new AppError("User does not exist", 403);
+  if (!user)
+    throw new AppError("User does not exist", StatusCode.RESOURCE_NOT_FOUND);
   else {
     if (user && !user.otpCode)
-      throw new AppError("Invalid or expired OTP", 403);
+      throw new AppError(
+        "Invalid or expired OTP",
+        StatusCode.UNAUTHORIZED_USER
+      );
   }
 
   // Check if otp is correct
   const otpIsValid = await user.userOtpValid(otpCode);
-  if (!otpIsValid) throw new AppError("Invalid or expired OTP", 400);
+  if (!otpIsValid)
+    throw new AppError("Invalid or expired OTP", StatusCode.BAD_REQUEST);
 
   // Check user onboarding status
   let userHasOnboarded = false;

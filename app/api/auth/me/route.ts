@@ -1,3 +1,4 @@
+import { StatusCode } from "@/constants/status-codes";
 import catchErrorAsync from "@/lib/catch-async-error";
 import { UserModel } from "@/models/UserModel";
 import AppError from "@/modules/AppError";
@@ -12,7 +13,8 @@ export const GET = catchErrorAsync(async (request: NextRequest) => {
     "-__v -otpCode -otpCodeExpiry"
   );
 
-  if (!user) throw new AppError("Unauthorized User", 403);
+  if (!user)
+    throw new AppError("Unauthorized User", StatusCode.UNAUTHORIZED_USER);
 
   return NextResponse.json(
     {

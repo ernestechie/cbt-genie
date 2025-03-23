@@ -1,27 +1,19 @@
 "use client";
 
-import { emailSchema } from "@/schema/auth-schema";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { AuthRoutes, AuthStep, CBT_GENIE_USER } from "@/constants/auth";
 import httpClient from "@/server/axios";
 import { useAuthStore } from "@/store/auth-store";
 
+import { emailFormSchema, EmailFormType } from "@/schema/auth-schema";
 import { toast } from "sonner";
 import FormContainer from "../Base/Form/FormContainer";
 import TextInput from "../Base/Input/TextInput";
 import { Button } from "../ui/button";
 import { Form, FormLabel } from "../ui/form";
-
-const emailFormSchema = z.object({
-  email: emailSchema,
-});
-
-type EmailFormType = z.infer<typeof emailFormSchema>;
 
 export default function EmailRegistrationForm() {
   const { setAuthStep } = useAuthStore();

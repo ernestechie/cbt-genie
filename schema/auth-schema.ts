@@ -11,3 +11,9 @@ export const otpFormSchema = z.object({
     .min(6, "OTP must be 6 digits")
     .max(6, "OTP must be 6 digits"),
 });
+
+export const emailFormSchema = z.object({
+  email: emailSchema,
+});
+
+export type EmailFormType = z.infer<typeof emailFormSchema>;
