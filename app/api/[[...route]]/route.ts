@@ -6,7 +6,7 @@ import { handle } from "hono/vercel";
 export const runtime = "nodejs";
 const app = new Hono().basePath("/api");
 
-export const routes = app.route("/hono-auth", authRoutes);
+export const routes = app.route("/auth", authRoutes);
 // .route('/users', usersRoutes);
 
 app.get("*", (context) => {
