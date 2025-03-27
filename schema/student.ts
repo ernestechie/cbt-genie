@@ -6,3 +6,5 @@ export const studentOnboardingFormSchema = z.object({
   faculty: z.string().min(1, "Faculty is required"),
   department: z.string().min(1, "Department is required"),
 });
+
+export type IUserType = z.infer<typeof studentOnboardingFormSchema>;
