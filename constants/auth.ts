@@ -1,10 +1,11 @@
-export enum AuthRoutes {
-  SignIn = "/auth/passwordless",
-  Onboarding = "/auth/onboarding",
-  VerifyOtp = "/auth/verify-otp",
-  ResendOtp = "/auth/resend-otp",
-  Logout = "/auth/logout",
-}
+export const AuthBasePath = "/auth" as const;
+export const AuthRoutes = {
+  SignIn: `${AuthBasePath}/passwordless`,
+  Onboarding: `${AuthBasePath}/onboarding`,
+  VerifyOtp: `${AuthBasePath}/verify-otp`,
+  ResendOtp: `${AuthBasePath}/auth/resend-otp`,
+  Logout: `${AuthBasePath}/auth/logout`,
+} as const;
 
 export enum AuthStep {
   Welcome = "Welcome",
