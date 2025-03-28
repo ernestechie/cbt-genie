@@ -1,3 +1,4 @@
+import { AuthBasePath } from "@/constants/auth";
 import { StatusCode } from "@/constants/status-codes";
 import authRoutes from "@/server/auth/authRoutes";
 import { Hono } from "hono";
@@ -6,7 +7,7 @@ import { handle } from "hono/vercel";
 export const runtime = "nodejs";
 const app = new Hono().basePath("/api");
 
-export const routes = app.route("/auth", authRoutes);
+export const routes = app.route(AuthBasePath, authRoutes);
 // .route('/users', usersRoutes);
 
 app.get("*", (context) => {

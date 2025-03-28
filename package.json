@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack -p 8080",
+    "dev": "NODE_OPTIONS=--inspect next dev --turbopack -p 8080",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "hono": "^4.7.5",
+    "input-otp": "^1.4.2",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.482.0",
     "luxon": "^3.5.0",

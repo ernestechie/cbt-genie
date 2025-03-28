@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import FormContainer from "../Base/Form/FormContainer";
-import TextInput from "../Base/Input/TextInput";
+import AutoAdvancingInput from "../Base/Input/AutoAdvancingInput";
 import { Button } from "../ui/button";
 import { Form, FormLabel } from "../ui/form";
 
@@ -111,12 +111,11 @@ export default function EmailVerificationForm() {
             render={(field, err) => (
               <div className="mb-4">
                 <FormLabel htmlFor={field.name}>OTP Code</FormLabel>
-                <TextInput
+                <AutoAdvancingInput
                   {...field}
-                  type="number"
-                  maxLength={6}
-                  placeholder="e.g 469-101"
+                  length={6}
                   error={err?.message}
+                  onValueChange={field.onChange}
                 />
               </div>
             )}

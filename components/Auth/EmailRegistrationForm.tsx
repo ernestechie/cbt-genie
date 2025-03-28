@@ -37,10 +37,10 @@ export default function EmailRegistrationForm() {
         duration: 10000,
       });
 
-      if (apiData?.data?.userExists) {
-        const userEmail = apiData?.data?.user?.email;
-        localStorage.setItem(CBT_GENIE_USER, userEmail);
+      const userEmail = apiData?.data?.user?.email;
+      localStorage.setItem(CBT_GENIE_USER, userEmail);
 
+      if (apiData?.data?.userExists) {
         setAuthStep(AuthStep.EnterOTP);
       } else {
         setAuthStep(AuthStep.EnterPersonalDetails);

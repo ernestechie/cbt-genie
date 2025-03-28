@@ -4,9 +4,6 @@ import AppError from "@/modules/AppError";
 import { Context, TypedResponse } from "hono";
 
 interface HonoErrorCatch {
-  // (handler: Context): Promise<
-  //   Response | TypedResponse<any, StatusCode, string>
-  // >;
   (handler: Context): Promise<
     Response | TypedResponse<any, StatusCode, string>
   >;
