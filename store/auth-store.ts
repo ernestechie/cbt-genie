@@ -4,7 +4,7 @@ import { create } from "zustand";
 
 type State = {
   userData: any;
-  authStep: AuthStep;
+  authStep: AuthStep | null;
 };
 
 type Action = {
@@ -14,7 +14,7 @@ type Action = {
 
 export const useAuthStore = create<State & Action>((set) => ({
   userData: null,
-  authStep: AuthStep.EnterEmail,
+  authStep: null,
   setAuthStep: (step) => set(() => ({ authStep: step })),
   updateUserData: (user) => set(() => ({ userData: user })),
 }));

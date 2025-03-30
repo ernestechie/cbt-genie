@@ -1,5 +1,6 @@
 import { CBT_GENIE_COOKIE_KEY } from "@/constants/auth";
 import { StatusCode } from "@/constants/status-codes";
+// import OtpEmail from "@/email-templates/OtpEmail";
 import { sessionMiddleware } from "@/middlewares/session-middleware";
 import { UserModel } from "@/models/UserModel";
 import { emailFormSchema, verificationFormSchema } from "@/schema/auth-schema";
@@ -11,6 +12,7 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
 import jwt from "jsonwebtoken";
+// import { sendEmail } from "../email";
 
 connect();
 const authRoutes = new Hono();
@@ -68,10 +70,19 @@ authRoutes.post(
         userExists = false;
         user = await UserModel.create({ email: body.email });
       } else {
-        // Generate new otp
+        // Generate new otp and send to user
         // const otpCode =
         await user.createOtpCodeToken();
-        // TODO: Send otp to user email
+        //  Send email to user
+        // await sendEmail({
+        //   subject: "Verify your email",
+        //   recipients: [email],
+        //   template: OtpEmail,
+        //   templateProps: {
+        //     otpCode,
+        //   },
+        // });
+
         await user.save({ validateBeforeSave: false });
       }
 

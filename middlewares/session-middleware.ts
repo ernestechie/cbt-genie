@@ -19,7 +19,6 @@ export const sessionMiddleware = createMiddleware<AuthContext>(
 
     try {
       const token = getCookie(context, CBT_GENIE_COOKIE_KEY);
-
       if (!token) {
         status(StatusCode.UNAUTHORIZED_USER);
         return json({
@@ -34,7 +33,6 @@ export const sessionMiddleware = createMiddleware<AuthContext>(
       ) as any;
 
       const userId = await decodedTokenValue?.id;
-
       const user = await UserModel.findById(userId).select(
         "-__v -otpCode -otpCodeExpiry"
       );
