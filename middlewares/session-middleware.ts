@@ -49,11 +49,18 @@ export const sessionMiddleware = createMiddleware<AuthContext>(
       context.set("userId", userId);
       await next();
     } catch (err) {
-      console.log("sessionMiddleware => ", err);
+      const error = err as Error;
 
-      status(StatusCode.INERNAL_SERVER_ERROR);
+      status(
+        error.name === "TokenExpiredError"
+          ? StatusCode.UNAUTHORIZED_USER
+          : StatusCode.INERNAL_SERVER_ERROR
+      );
       return json({
-        message: "Something went wrong",
+        message:
+          error.name === "TokenExpiredError"
+            ? "Unauthorized User"
+            : "Something went wrong",
         status: false,
       });
     }
