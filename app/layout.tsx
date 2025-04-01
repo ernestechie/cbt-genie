@@ -1,3 +1,4 @@
+import ReactQueryClientProvider from "@/components/Providers/ReactQueryClientProvider";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Geist, Manrope } from "next/font/google";
@@ -29,7 +30,7 @@ export default function RootLayout({
         className={`${manropeSans.variable} ${geistMono.variable} antialiased`}
       >
         <Toaster position="top-center" className="!rounded-3xl" />
-        {children}
+        <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
       </body>
     </html>
   );

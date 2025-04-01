@@ -19,13 +19,13 @@ export default function Navigation({ navLinks }: NavigationProps) {
   return (
     <aside
       className={cn(
-        "fixed top-0 left-0 bg-white border-r border-neutral-100 h-full overflow-y-auto duration-500",
+        "fixed top-0 left-0 bg-white border-r border-neutral-100 h-full overflow-y-auto duration-300",
         sidebarCollapsed ? "w-20" : "w-52"
       )}
     >
       <div className="p-4 py-8">
         <p className="text-xl mb-16 font-bold text-center">==</p>
-        <div className="flex flex-col gap-y-4 my-8">
+        <div className="flex flex-col gap-y-3 my-8">
           {navLinks.map((navLink) => (
             <Link
               key={navLink.slug}
