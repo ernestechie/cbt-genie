@@ -57,6 +57,7 @@ export default function EmailVerificationForm() {
 
         // Check if user has onboarded
         if (data?.userHasOnboarded) {
+          console.log("data ->", data);
           setAuthStep(AuthStep.EnterEmail);
           router.push("/app");
         } else setAuthStep(AuthStep.EnterPersonalDetails);

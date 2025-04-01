@@ -25,6 +25,7 @@
     "hono": "^4.7.5",
     "input-otp": "^1.4.2",
     "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.482.0",
     "luxon": "^3.5.0",
     "mongodb": "^6.14.2",

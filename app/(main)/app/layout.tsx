@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "@/components/Layout/Navbar/Navbar";
 import SidebarWrapper from "@/components/Layout/Sidebar/Index";
 import { cn } from "@/lib/utils";
 import { useDashboardStore } from "@/store/dashboard-store";
@@ -15,8 +16,9 @@ export default function ProtectedAppLayout({
 
   return (
     <div>
+      <Navbar />
       <SidebarWrapper />
-      <div className={cn("px-4", sidebarCollapsed ? "pl-20" : "pl-60")}>
+      <div className={cn("px-4 py-18", sidebarCollapsed ? "pl-24" : "pl-60")}>
         {children}
       </div>
     </div>

@@ -23,14 +23,15 @@ export default function Navigation({ navLinks }: NavigationProps) {
         sidebarCollapsed ? "w-20" : "w-52"
       )}
     >
-      <div>
-        <div className="flex flex-col gap-y-4 p-4 my-8">
+      <div className="p-4 py-8">
+        <p className="text-xl mb-16 font-bold text-center">==</p>
+        <div className="flex flex-col gap-y-4 my-8">
           {navLinks.map((navLink) => (
             <Link
               key={navLink.slug}
               href={navLink.url}
               className={cn(
-                "capitalize p-2 px-4 hover:bg-neutral-50 rounded-md text-sm flex items-center gap-x-3 text-neutral-500 duration-500",
+                "capitalize p-2 px-4 hover:bg-neutral-50 rounded-md text-sm flex items-center gap-x-3 text-neutral-500 duration-300",
                 pathname === navLink.url
                   ? "bg-primary/10 text-primary font-medium"
                   : "bg-white",
@@ -60,7 +61,7 @@ export default function Navigation({ navLinks }: NavigationProps) {
           onClick={toggleSidebarCollapse}
           size={sidebarCollapsed ? "icon" : "small"}
           variant="ghost"
-          className="!mx-auto !block !duration-500 !text-neutral-500"
+          className="!mx-auto !block !duration-300 !text-neutral-500"
         >
           {!sidebarCollapsed ? (
             <span className="flex items-center gap-x-6  text-sm">
