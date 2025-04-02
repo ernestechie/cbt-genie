@@ -1,5 +1,6 @@
 import { CBT_GENIE_COOKIE_KEY } from "@/constants/auth";
 import { StatusCode } from "@/constants/status-codes";
+import OtpEmail from "@/email-templates/OtpEmail";
 // import OtpEmail from "@/email-templates/OtpEmail";
 import { sessionMiddleware } from "@/middlewares/session-middleware";
 import { UserModel } from "@/models/UserModel";
@@ -12,6 +13,7 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../email";
 // import { sendEmail } from "../email";
 
 connect();
@@ -69,22 +71,21 @@ authRoutes.post(
       if (!user) {
         userExists = false;
         user = await UserModel.create({ email: body.email });
-      } else {
-        // Generate new otp and send to user
-        // const otpCode =
-        await user.createOtpCodeToken();
-        //  Send email to user
-        // await sendEmail({
-        //   subject: "Verify your email",
-        //   recipients: [email],
-        //   template: OtpEmail,
-        //   templateProps: {
-        //     otpCode,
-        //   },
-        // });
-
-        await user.save({ validateBeforeSave: false });
       }
+
+      // Generate new otp and send to user
+      const otpCode = await user.createOtpCodeToken();
+      //  Send email to user
+      await sendEmail({
+        subject: "Verify your email",
+        recipients: [email],
+        template: OtpEmail,
+        templateProps: {
+          otpCode,
+        },
+      });
+
+      await user.save({ validateBeforeSave: false });
 
       const message = userExists
         ? "An otp has been sent to your email"

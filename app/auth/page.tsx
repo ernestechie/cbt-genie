@@ -5,6 +5,7 @@ import EmailVerificationForm from "@/components/Auth/EmailVerificationForm";
 import StudentOnboardingForm from "@/components/Auth/StudentOnboardingForm";
 import SuccessPage from "@/components/Auth/SuccessPage";
 import AuthLayout from "@/components/Layout/AuthLayout";
+import Logo from "@/components/Logo";
 import { AuthStep } from "@/constants/auth";
 import { useAuthStore } from "@/store/auth-store";
 import React from "react";
@@ -25,5 +26,12 @@ export default function AuthPage() {
     }
   };
 
-  return <AuthLayout>{renderAuthStep()}</AuthLayout>;
+  return (
+    <AuthLayout>
+      <div className="mb-8">
+        <Logo />
+      </div>
+      {renderAuthStep()}
+    </AuthLayout>
+  );
 }

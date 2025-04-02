@@ -16,7 +16,6 @@ interface OtpEmailProps {
   otpCode?: string;
 }
 
-const baseUrl = `https://${process.env.DOMAIN}` || "";
 export default function OtpEmail({ otpCode }: OtpEmailProps) {
   return (
     <Html>
@@ -27,9 +26,9 @@ export default function OtpEmail({ otpCode }: OtpEmailProps) {
           <Section style={coverSection}>
             <Section style={imageSection}>
               <Img
-                src={`${baseUrl}/static/cbt-genie-logo.png`}
-                width="75"
-                height="45"
+                src={`https://res.cloudinary.com/df4xvp4df/image/upload/v1743637201/logo-primary-filled_jkxnde.png`}
+                width="60"
+                height="60"
                 alt="CBT Genie's Logo"
               />
             </Section>
@@ -115,7 +114,7 @@ const text = {
 const imageSection = {
   backgroundColor: "#252f3d",
   display: "flex",
-  padding: "20px 0",
+  padding: "16px",
   alignItems: "center",
   justifyContent: "center",
   borderRadius: "12px 12px 0 0",

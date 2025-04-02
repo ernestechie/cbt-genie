@@ -40,11 +40,12 @@ export default function EmailRegistrationForm() {
       const userEmail = apiData?.data?.user?.email;
       localStorage.setItem(CBT_GENIE_USER, userEmail);
 
-      if (apiData?.data?.userExists) {
-        setAuthStep(AuthStep.EnterOTP);
-      } else {
-        setAuthStep(AuthStep.EnterPersonalDetails);
-      }
+      setAuthStep(AuthStep.EnterOTP);
+      // if (apiData?.data?.userExists) {
+      //   setAuthStep(AuthStep.EnterOTP);
+      // } else {
+      //   setAuthStep(AuthStep.EnterPersonalDetails);
+      // }
       reset();
     } catch (error) {
       console.log(error);
